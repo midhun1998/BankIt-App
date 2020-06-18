@@ -45,7 +45,7 @@ class Customer(db.Model):
         return "Customer id: "+str(self.cid)      
 
 class Login(db.Model): 
-    uid = db.Column(db.Integer(), primary_key=True) 
+    uid = db.Column(db.Text, primary_key=True) 
     passw = db.Column(db.String(45), nullable=False) 
     datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -139,7 +139,7 @@ def Menu():
     else:
         if request.method == 'POST':
             if 'uid' in request.form:
-                uid = int(request.form['uid'])  
+                uid = str(request.form['uid'])  
                 passw = str(request.form['passw'])
                 results = db.session.query(Login).filter(Login.uid==uid)
                 x = [print(i) for i in results]
