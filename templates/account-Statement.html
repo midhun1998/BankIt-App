@@ -21,6 +21,7 @@ function yesnoCheck() {
         document.getElementById('transactionNumber').style.display = 'none';
    }
 }
+
 </script>
 {% endblock %}
 
@@ -121,9 +122,11 @@ function yesnoCheck() {
                                         <td>{{ row.amount }}</td>
                                     </tr>                                   
                                     {% endfor %}
+                                    <tr><button class="btn btn-danger btn-md float-right" onclick="window.print();return false;">Save</button></tr>
                                 </tbody>    
                             </table>
                         </div>
+                        
                 {% endif %}
             {% endif %}
         </div>
