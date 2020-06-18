@@ -103,6 +103,9 @@ class Transaction(db.Model):
 # Initializing Dummy Data (Run in Python Terminal)
 # ###########################
 
+# Cashier id: 1
+# Cashier password: password
+
 # from app import db
 # from app import Customer
 # db.create_all()
@@ -123,6 +126,11 @@ class Transaction(db.Model):
 # @app.route('/login', methods=['POST']) 
 # def Login_Mod(): 
 #     return render_template('login.html')  
+
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 @app.route('/login', methods=['GET','POST']) 
 def Menu():
@@ -146,19 +154,6 @@ def Menu():
                     return render_template('login.html')
         else:
             return render_template('login.html')   
-
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-##################################################################  
-# @app.route('/Success')  
-# def success():   
-#     return render_template('sample.html')
-
-
-
 
 @app.route('/CustomerStatus')
 def CustomerStatus():
