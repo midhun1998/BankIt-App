@@ -102,7 +102,7 @@ class Transaction(db.Model):
 # ###########################
 # Initializing Dummy Data (Run in Python Terminal)
 # ###########################
-
+# Login Credentials for Customer.db file(Existing DB)
 # Cashier id: 1
 # Cashier password: password
 
