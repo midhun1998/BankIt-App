@@ -221,6 +221,7 @@ def update():
             accid=request.form["accid"]
             cust = Customer.query.filter_by(accountId=accid).first()
             cust.accountBalance = (int)(oldb)+(int)(newb)
+            db.session.add(Transaction(cid=cust.cid, amount=(int)(newb), source_acc_type=cust.account_type, target_acc_type=cust.account_type, trans_type='C'))
             cust.message="Deposit success"
             cust.last_updated=datetime.utcnow()
             db.session.commit()
@@ -240,6 +241,7 @@ def withdrawupdate():
                 cust.message="Withdraw failed"
             else:
                 cust.accountBalance = (int)(oldb)-(int)(newb)
+                db.session.add(Transaction(cid=cust.cid, amount=(int)(newb), source_acc_type=cust.account_type, target_acc_type=cust.account_type, trans_type='D'))
                 cust.message="Withdraw success"
             cust.last_updated=datetime.utcnow()
             db.session.commit()
@@ -293,7 +295,9 @@ def transferupdate():
                 scust.accountBalance = int(scust.accountBalance)-int(tran)
                 tcust.accountBalance = int(tcust.accountBalance)+int(tran)
                 scust.message="Transfer success"
+                db.session.add(Transaction(cid=scust.cid, amount=(int)(tran), source_acc_type=scust.account_type, target_acc_type=tcust.account_type, trans_type='D'))
                 tcust.message="Money Recieved"
+                db.session.add(Transaction(cid=tcust.cid, amount=(int)(tran), source_acc_type=scust.account_type, target_acc_type=tcust.account_type, trans_type='C'))
                 scust.last_updated=datetime.utcnow()
                 tcust.last_updated=datetime.utcnow()
                 
@@ -330,8 +334,9 @@ def transferupdates():
                 scust.accountBalance = int(scust.accountBalance)-int(tran)
                 tcust.accountBalance = int(tcust.accountBalance)+int(tran)
                 scust.message="Transfer success"
+                db.session.add(Transaction(cid=scust.cid, amount=(int)(tran), source_acc_type=scust.account_type, target_acc_type=tcust.account_type, trans_type='D'))
                 tcust.message="Money Recieved"
-                
+                db.session.add(Transaction(cid=tcust.cid, amount=(int)(tran), source_acc_type=scust.account_type, target_acc_type=tcust.account_type, trans_type='C'))
                 
             db.session.commit()
             return redirect("/AccountStatus")
