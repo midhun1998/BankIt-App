@@ -78,6 +78,24 @@ class CustomerDetails(db.Model):
     def __repr__(self):
         return "Customer id: "+str(self.cid)
 
+class Transaction(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    cid = db.Column(db.Integer(), nullable=False)
+    amount = db.Column(db.Integer(), nullable=False)
+    source_acc_type = db.Column(db.String(1), nullable=False)
+    target_acc_type = db.Column(db.String(1), nullable=False)
+    tans_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    trans_type = db.Column(db.String(1), nullable=False)
+
+    def __init__(self, cid, amount, source_acc_type, target_acc_type, trans_type):
+        self.cid = cid
+        self.amount = amount
+        self.source_acc_type = source_acc_type
+        self.target_acc_type = target_acc_type
+        self.trans_type = trans_type
+        
+    def __repr__(self):
+        return "Transaction id: "+str(self.id)
 
 
 
@@ -447,7 +465,49 @@ def DeleteAccount():
             return render_template('delete-account.html')
     else:
         return render_template('login.html')
-        
+
+
+@app.route("/AccountStatement", methods=["POST",'GET'])
+def AccountStatement():
+    if 'uid' in session:
+        if request.method == 'POST':
+            if request.form['option'] == 'trans':
+                n = request.form['number']
+                if (int)(n) > 0:
+                    accid = request.form['accid']
+                    c = db.session.query(Customer).filter(Customer.accountId == accid).count()
+                    if c == 0:
+                        return render_template('account-Statement.html', error="No Account was found.")
+                    else:
+                        customer = db.session.query(Customer).filter(Customer.accountId == accid).all()[0].cid
+                        transaction = db.session.query(Transaction).filter(Transaction.cid == customer).limit(n)
+                        return render_template('account-Statement.html', transaction=transaction)
+                else:
+                    return render_template('account-Statement.html', error="Please Select Number of Transactions")
+            elif request.form['option'] == 'dates':
+                sd = request.form['startdate']
+                ed = request.form['enddate']
+                sd = datetime.strptime((sd + " 00:00:00"), '%Y-%m-%d %H:%M:%S')
+                ed = datetime.strptime((ed + " 00:00:00"), '%Y-%m-%d %H:%M:%S')
+                if sd > ed:
+                    return render_template('account-Statement.html', error="Invalid Date was found.")
+                else:
+                    accid = request.form['accid']
+                    c = db.session.query(Customer).filter(Customer.accountId == accid).count()
+                    if c == 0:
+                        return render_template('account-Statement.html', error="No Account was found.")
+                    else:
+                        customer = db.session.query(Customer).filter(Customer.accountId == accid).all()[0].cid
+                        transaction = db.session.query(Transaction).filter(Transaction.cid == customer).filter(Transaction.tans_date >= sd).filter(Transaction.tans_date <= ed)
+                        return render_template('account-Statement.html', transaction=transaction)
+            else:
+                return render_template('account-Statement.html', error="Invalid Input was found.")
+
+        else:
+            return render_template('account-Statement.html')
+    else:
+        return render_template('login.html')
+    
 @app.route('/Logout')
 def Logout(): 
     if 'uid' in session:
