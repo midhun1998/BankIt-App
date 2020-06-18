@@ -15,16 +15,13 @@
     <section id="content">
         <form method="POST" action=/CreateCustomer>
             <h1>Customer Creation Form</h1>
-            <!-- {% if cid %}
-            <div>
-                <input type="text" placeholder="{{ cid }}" required="" id="name" name="customer_name" disabled=true readonly/>
-            </div> 
-            {% endif %} -->
+ 
+           
             <div>
                 <input type="text" placeholder="Customer Name" required="" id="name" name="customer_name"/>
             </div>       
             <div>
-                <input type="text" placeholder="Age" required="" id="Age" name="age" />
+                <input type="text" placeholder="Age" required="" id="Age" name="age" pattern="[0-9]{1,}" />
             </div>  
             <div>
                 <input type="text" placeholder="Address" required="" id="add" name="address" />
@@ -37,7 +34,7 @@
             </div> 
   
             <div>
-                <input type="text" placeholder="SSID" required="" id="ssid" name="ssnid" />
+                <input type="text" placeholder="SSID (9-digit)" required="" id="ssid" name="ssnid" pattern="[1-9]{1}[0-9]{8}"/>
             </div>
             <div>   
                 <input type="submit" value="Create Customer"/>
