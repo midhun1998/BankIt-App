@@ -47,7 +47,12 @@
 						</ul>
 					</nav>
 				</div>
-			</div>
+			</div>   
+			<div class="flashes">
+				{% for message in get_flashed_messages() %}
+				  {{ message }}
+				{% endfor %}
+			  </div>
 		</div><!-- /container -->  
 		<script src="{{ url_for('static', filename='js/ytmenu.js') }}"></script>
 

@@ -1,17 +1,22 @@
-<!DOCTYPE html>
-<html>
-<style>   
+{% extends 'base.html' %}
 
-body {  
-  background-size: cover;
-  background-image: url('static/img/newe.jpg');  
-  background-attachment: fixed
-}
-</style>
 
-<body>
+{% block title %}
+<title>Error</title>
+{% endblock %}
+
+{% block style %}
+<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+{% endblock %}
 
 
 
-</body>
-</html>
+{% block body %}
+<div class="container">
+    <div>   
+        <img src="static/img/newe.jpg" width="1000" height="650" align:middle >   
+        
+     </div>          
+   
+</div>
+{% endblock %}

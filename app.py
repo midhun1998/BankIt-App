@@ -149,12 +149,11 @@ def Menu():
                     for row in results:
                         if (row.uid == uid) and (row.passw == passw):
                             session['uid'] = uid
-                            print(session['uid'])
+                            print(session['uid'])  
                             return render_template('menu.html')
                     return render_template('login.html')
         else:
             return render_template('login.html')   
-
 
 @app.route('/CustomerStatus')
 def CustomerStatus():
@@ -181,7 +180,7 @@ def CustomerSearch():
                 return render_template('customer-Search.html', result=results)
             else:
                 ssnid = request.form['ssnid']
-                results = db.session.query(Customer).filter(Customer.ssnid == ssnid)
+                results = db.session.query(Customer).filter(Customer.ssnid == ssnid)    
                 return render_template('customer-Search.html', result=results)
         else:   
             return render_template('customer-Search.html')
@@ -349,9 +348,8 @@ def transferupdates():
 @app.route('/CreateCustomer', methods=['GET', 'POST'])
 def CreateCustomer():
     cid = int(randN())
-    print(cid)
-    # rendered = render_template('create-customer.html', cid=cid) 
-    if 'uid' in session:
+    print(cid)   
+    if 'uid' in session:      
         if request.method == 'POST':
             if 'ssnid' in request.form:
                 ssnid = int(request.form['ssnid'])
@@ -363,9 +361,16 @@ def CreateCustomer():
                 
                 # inserting data
                 db.create_all()
-                db.session.add(CustomerDetails(cid=cid, ssnid=ssnid, customer_name=customer_name, age=age, address=address, state=state, city=city))
-                db.session.commit()
-                return render_template('create-customer.html')
+                db.session.add(CustomerDetails(cid=cid, ssnid=ssnid, customer_name=customer_name, age=age, address=address, state=state, city=city))           
+                accountId = int(randN())
+                db.session.add(Customer(cid=cid, ssnid=ssnid, accountId=accountId, accountBalance=0, account_type='S', status='Pending Approval', message='Just Created'))
+                db.session.commit()   
+                results = db.session.query(CustomerDetails).filter(CustomerDetails.cid == cid).first()  
+                if results.cid == cid:   
+                    return render_template('success.html' , message = "Customer Registered with Customer ID:"+str(cid))   
+                else:      
+                    return render_template('error.html')      
+
             else:
                 return render_template('create-customer.html') 
         else:
@@ -393,9 +398,9 @@ def AddAccount():
                     accountId = int(randN())
                     db.session.add(Customer(cid=cid, ssnid=ssnid, accountId=accountId, accountBalance=accountBalance, account_type=account_type, status='Pending Approval', message='Just Created'))
                     db.session.commit()
-                    return render_template('create-account.html')
+                    return render_template('success.html' , message = "Account Created with Account ID:"+str(accountId))
             else:
-                return render_template('create-account.html')
+                return render_template('error.html')
         else:
             return render_template('create-account.html') 
     else:
@@ -422,9 +427,9 @@ def UpdateCustomer():
                         row.address = address
                         row.age = age
                         db.session.commit()
-                    return render_template('update-customer.html')
+                    return render_template('success.html' , message = "Updated Customer with Customer ID:"+str(cid))
             else:
-                return render_template('update-customer.html')
+                return render_template('update-customer.html' , )
         else:
             return render_template('update-customer.html')
     else:
@@ -445,7 +450,7 @@ def DeleteCustomer():
                     db.session.query(Customer).filter(Customer.cid == cid).delete()
                     db.session.query(CustomerDetails).filter(CustomerDetails.cid == cid).delete()
                     db.session.commit()
-                    return render_template('delete-customer.html')
+                    return render_template('success.html' , message = "Deleted Customer with Customer ID:"+str(cid))
             else:
                 return render_template('delete-customer.html')
         else:
@@ -466,7 +471,7 @@ def DeleteAccount():
                 else:
                     db.session.query(Customer).filter(Customer.accountId == accountId).delete()
                     db.session.commit()
-                    return render_template('delete-account.html')
+                    return render_template('success.html' , message = "Account created with Account ID:"+str(accountId))
             else:
                 return render_template('delete-account.html')
         else:
